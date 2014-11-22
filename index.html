@@ -3,7 +3,7 @@
 <title>Filament Calculator</title>
 <link href='http://fonts.googleapis.com/css?family=Lato:100,700italic,300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="style.css">
-<script src="jquery-1.11.1.min.js"></script> 
+<script src="jquery-1.11.1.min.js"></script>
 </head>
 <body>
 <div class="headline">Filament Calculator</div>
@@ -73,109 +73,7 @@
     <td id="calc_preis">x &euro;</td>
   </tr>
 </table>
-
+<script src="ui.js"></script>
+<script src="calc.js"></script>
 </body>
-
-<script>
- $( ".content" ).fadeTo(2000 , 1, function() {
-// Animation complete.
-});
-
-$( ".pre_select .options div" ).click(function() {
-	$(this).parent("div").prev("input").val($(this).text());
-});
-
-$( ".pre_select #1 div" ).click(function() {
-	if ($(this).text() == "ABS") {
-		$("#value_dichte").val("1120");
-		calc();
-	} else if ($(this).text() == "PLA") {
-		$("#value_dichte").val("1430");
-		calc();
-	}
-});
-
-function calc() {
-	all_entered = true;
-	$( "input" ).each(function( index ) {
-		if ($( this ).val() == "" && index != 0) {
-			all_entered = false;
-		}
-	});
-	
-	if (all_entered == true) {
-		volumen = Math.PI * Math.pow(($("#value_durchmesser").val() / 2), 2) * $("#value_laenge").val();
-		gewicht = volumen / 1000000000 * $("#value_dichte").val() * 1000;
-		preis_pro_gramm = $("#value_preis").val() / $("#value_gewicht").val();
-		preis = preis_pro_gramm * gewicht;
-	
-		$("#calc_volumen").text(volumen.toFixed(2) + " mm³");
-		$("#calc_gewicht").text(gewicht.toFixed(2) + " g");
-		$("#calc_preis_pro_gramm").text(preis_pro_gramm + " €");
-		$("#calc_preis").text(preis.toFixed(4) + " €");
-	}
-}
-
-$( "input" ).blur(function() {
-	calc();
-});
-
-function open(id, n) {
-	if (n < 50) {
-		$( "#" + id ).css( "max-height", n + "px");
-		setTimeout("open("+ id +", " + (n + 2) +")", 1);
-	}
-}
-
-function close(id) {
-	if ($( "#" + id ).css( "max-height").replace("px", "") > 0) {
-		$( "#" + id ).css( "max-height", $( "#" + id ).css( "max-height").replace("px", "") - 2 + "px");
-		setTimeout("close("+ id +")", 1);
-	} else {
-		$( "#" + id ).css("display", "none");
-		$( "#" + id ).prev("input").css( "-webkit-border-bottom-left-radius", "30px  30px" );
-		$( "#" + id ).prev("input").css( "-webkit-border-bottom-right-radius", "30px 30px" );
-		$( "#" + id ).prev("input").css( "-moz-border-radius-bottomleft", "30px 30px" );
-		$( "#" + id ).prev("input").css( "-moz-border-radius-bottomright", "30px 30px" );
-		$( "#" + id ).prev("input").css( "border-bottom-left-radius", "30px 30px" );
-		$( "#" + id ).prev("input").css( "border-bottom-right-radius", "30px 30px" );
-	}
-}
-
-$( "input" ).focus(function() {
-//$( this ).next( "span" ).css( "display", "inline" ).fadeOut( 1000 );
-$( this ).css( "box-shadow", "0px 0px 15px #362833" );
-
-if ( $(this).attr("class") == "dropdown" ) {
-	$( this ).css( "-webkit-border-bottom-left-radius", "0px 30px" );
-	$( this ).css( "-webkit-border-bottom-right-radius", "0px 30px" );
-	$( this ).css( "-moz-border-radius-bottomleft", "0px 30px" );
-	$( this ).css( "-moz-border-radius-bottomright", "0px 30px" );
-	$( this ).css( "border-bottom-left-radius", "0px 30px" );
-	$( this ).css( "border-bottom-right-radius", "0px 30px" );
-	$(this).next( "div" ).css("display", "block");
-	open($( this ).next( "div" ).attr( "id" ), 0);
-}
-
-
-
- $(this).next( "span" ).animate({
-opacity: 0
-}, 5000, function() {
-// Animation complete.
-});
-
-    //-moz-border-radius: 30px; 
-   // border-radius: 30px; 
-
-});
-
-$( "input" ).blur(function() {
-//$( this ).next( "span" ).css( "display", "inline" ).fadeOut( 1000 );
-if ( $(this).attr("class") == "dropdown" ) {
-	close($( this ).next( "div" ).attr( "id" ));
-}
-$(this).css( "box-shadow", "0px 0px 0px #362833" );
-});
-</script>
 </html>
