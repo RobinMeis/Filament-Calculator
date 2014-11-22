@@ -12,9 +12,9 @@ function calc() {
 		preis_pro_gramm = $("#value_preis").val() / $("#value_gewicht").val();
 		preis = preis_pro_gramm * gewicht;
 	
-		$("#calc_volumen").text(volumen.toFixed(2) + " mm&sup3;");
-		$("#calc_gewicht").text(gewicht.toFixed(2) + " g");
-		$("#calc_preis_pro_gramm").text(preis_pro_gramm + " &euro;");
-		$("#calc_preis").text(preis.toFixed(4) + " &euro;");
+		$("#calc_volumen").html(volumen.toFixed(2) + " mm&sup3;");
+		$("#calc_gewicht").html(gewicht.toFixed(2) + " g");
+		$("#calc_preis_pro_gramm").html(preis_pro_gramm + " &euro;");
+		$("#calc_preis").html(preis.toFixed(4) + " &euro;");
 	}
 }
