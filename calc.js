@@ -18,3 +18,5 @@ function calc() {
 		$("#calc_preis").html(preis.toFixed(4) + " &euro;");
 	}
 }
+
+calc();
