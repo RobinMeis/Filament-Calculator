@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>Filament Calculator</title>
+<link href='http://fonts.googleapis.com/css?family=Lato:100,700italic,300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="jquery-1.11.1.min.js"></script> 
+</head>
+<body>
+<div class="headline">Filament Calculator</div>
+<div class="content">
+<span class="h2">Was ist das?<br></span>
+<span>Hat man ein mehr oder weniger aufwändiges 3D Modell erstellt, das man gerne mit einem 3D Drucker ausdrucken möchte, so stellt sich oft die Frage nach den Kosten. Es gibt im Internet zahlreiche Druckdienste, doch was kostet der Druck des jeweiligen Modells wirklich? Programme wie Sli3r geben nach der Umwandlung in gcode die Länge des genutzten Filaments an. Doch wie rechnent man sie ein Gewicht um, um die Kosten vor dem Druck bestimmen zu können. Benötigt wird bei durch Slic3r erzeugten gcode die Zeile filament-used sowie die Filamentdaten. Alles Andere ist Mathematik.<a href="erklaerung" target="_blank">Hier gibt es eine Erkl&auml;rung, wie die Umrechnung mathematisch gesehen funktioniert.</a></span><br>
+<span class="h2">Filamentwerte ausw&auml;hlen oder eingeben<br></span>
+
+<table>
+  <tr>
+    <td>Material</td>
+	<td><div class="pre_select"><input class="dropdown"><div id="1" class="options">
+	  <div>PLA</div>
+	  <div>ABS</div>
+	</div></div></td>
+	<td>Nicht erforderlich. Auswahl tr&auml;gt Dichte automatisch ein</td>
+  </tr>
+  <tr>
+    <td>Dichte</td>
+	<td><div class="pre_select"><input id="value_dichte"></td>
+	<td>in kg/m3</td>
+  </tr>
+  <tr>
+    <td>Durchmesser</td>
+	<td><div class="pre_select"><input id="value_durchmesser" class="dropdown"><div id="2" class="options">
+	  <div>1.75</div>
+	  <div>3.00</div>
+	</div></div></td>
+	<td>in mm</td>
+  </tr>
+  <tr>
+    <td>Ben&ouml;tigte L&auml;nge</td>
+	<td><div class="pre_select"><input id="value_laenge"></div></td>
+	<td>in mm</td>
+  </tr>
+  <tr>
+    <td>Gesamtgewicht</td>
+	<td><div class="pre_select"><input id="value_gewicht" class="dropdown"><div id="3" class="options">
+	  <div>750</div>
+	  <div>1000</div>
+	</div></div></td>
+	<td>in Gramm</td>
+  </tr>
+  <tr>
+    <td>Einkaufspreis</td>
+	<td><div class="pre_select"><input id="value_preis"></div></td>
+	<td>€</td>
+  </tr>
+</table>
+
+<span class="h2">Berechnung<br></span>
+<table>
+  <tr>
+    <td>Verdrucktes Volumen</td>
+    <td id="calc_volumen">x cm³</td>
+  </tr>
+  <tr>
+    <td>Gewicht</td>
+    <td id="calc_gewicht">x Gramm</td>
+  </tr>
+  <tr>
+    <td>Preis pro Gramm</td>
+    <td id="calc_preis_pro_gramm">x €</td>
+  </tr>
+  <tr>
+    <td>Gesamtkosten</td>
+    <td id="calc_preis">x €</td>
+  </tr>
+</table>
+
+</body>
+
+<script>
+ $( ".content" ).fadeTo(2000 , 1, function() {
+// Animation complete.
+});
+
+$( ".pre_select .options div" ).click(function() {
+	$(this).parent("div").prev("input").val($(this).text());
+});
+
+$( ".pre_select #1 div" ).click(function() {
+	if ($(this).text() == "ABS") {
+		$("#value_dichte").val("1120");
+		calc();
+	} else if ($(this).text() == "PLA") {
+		$("#value_dichte").val("1430");
+		calc();
+	}
+});
+
+function calc() {
+	all_entered = true;
+	$( "input" ).each(function( index ) {
+		if ($( this ).val() == "" && index != 0) {
+			all_entered = false;
+		}
+	});
+	
+	if (all_entered == true) {
+		volumen = Math.PI * Math.pow(($("#value_durchmesser").val() / 2), 2) * $("#value_laenge").val();
+		gewicht = volumen / 1000000000 * $("#value_dichte").val() * 1000;
+		preis_pro_gramm = $("#value_preis").val() / $("#value_gewicht").val();
+		preis = preis_pro_gramm * gewicht;
+	
+		$("#calc_volumen").text(volumen.toFixed(2) + " mm³");
+		$("#calc_gewicht").text(gewicht.toFixed(2) + " g");
+		$("#calc_preis_pro_gramm").text(preis_pro_gramm + " €");
+		$("#calc_preis").text(preis.toFixed(4) + " €");
+	}
+}
+
+$( "input" ).blur(function() {
+	calc();
+});
+
+function open(id, n) {
+	if (n < 50) {
+		$( "#" + id ).css( "max-height", n + "px");
+		setTimeout("open("+ id +", " + (n + 2) +")", 1);
+	}
+}
+
+function close(id) {
+	if ($( "#" + id ).css( "max-height").replace("px", "") > 0) {
+		$( "#" + id ).css( "max-height", $( "#" + id ).css( "max-height").replace("px", "") - 2 + "px");
+		setTimeout("close("+ id +")", 1);
+	} else {
+		$( "#" + id ).css("display", "none");
+		$( "#" + id ).prev("input").css( "-webkit-border-bottom-left-radius", "30px  30px" );
+		$( "#" + id ).prev("input").css( "-webkit-border-bottom-right-radius", "30px 30px" );
+		$( "#" + id ).prev("input").css( "-moz-border-radius-bottomleft", "30px 30px" );
+		$( "#" + id ).prev("input").css( "-moz-border-radius-bottomright", "30px 30px" );
+		$( "#" + id ).prev("input").css( "border-bottom-left-radius", "30px 30px" );
+		$( "#" + id ).prev("input").css( "border-bottom-right-radius", "30px 30px" );
+	}
+}
+
+$( "input" ).focus(function() {
+//$( this ).next( "span" ).css( "display", "inline" ).fadeOut( 1000 );
+$( this ).css( "box-shadow", "0px 0px 15px #362833" );
+
+if ( $(this).attr("class") == "dropdown" ) {
+	$( this ).css( "-webkit-border-bottom-left-radius", "0px 30px" );
+	$( this ).css( "-webkit-border-bottom-right-radius", "0px 30px" );
+	$( this ).css( "-moz-border-radius-bottomleft", "0px 30px" );
+	$( this ).css( "-moz-border-radius-bottomright", "0px 30px" );
+	$( this ).css( "border-bottom-left-radius", "0px 30px" );
+	$( this ).css( "border-bottom-right-radius", "0px 30px" );
+	$(this).next( "div" ).css("display", "block");
+	open($( this ).next( "div" ).attr( "id" ), 0);
+}
+
+
+
+ $(this).next( "span" ).animate({
+opacity: 0
+}, 5000, function() {
+// Animation complete.
+});
+
+    //-moz-border-radius: 30px; 
+   // border-radius: 30px; 
+
+});
+
+$( "input" ).blur(function() {
+//$( this ).next( "span" ).css( "display", "inline" ).fadeOut( 1000 );
+if ( $(this).attr("class") == "dropdown" ) {
+	close($( this ).next( "div" ).attr( "id" ));
+}
+$(this).css( "box-shadow", "0px 0px 0px #362833" );
+});
+</script>
+</html>
